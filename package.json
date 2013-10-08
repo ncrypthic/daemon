@@ -1,0 +1,10 @@
+{
+    "name": "ncrypthic/daemon",
+    "author": "Lim Afriyadi <lim.afriyadi.id@gmail.com>",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": { 
+            "Ncrypthic\\": "src/"
+        }
+    }
+}

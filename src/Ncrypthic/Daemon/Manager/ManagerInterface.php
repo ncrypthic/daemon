@@ -19,9 +19,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace NcrypthicDaemon\Manager;
+namespace Ncrypthic\Daemon\Manager;
 
-use NcrypthicDaemon\Process\ProcessInterface;
+use Ncrypthic\Daemon\Process\ProcessInterface;
 
 /**
  * Process manager interface
@@ -45,19 +45,19 @@ interface ManagerInterface extends \Iterator
     /**
      * Find managed process id
      * 
-     * @param \NcrypthicDaemon\Process\ProcessInterface $proc
+     * @param \Ncrypthic\Daemon\Process\ProcessInterface $proc
      */
     public function findProcess(ProcessInterface $proc);
     /**
      * Add managed process
      * 
-     * @param \NcrypthicDaemon\Process\ProcessInterface $proc
+     * @param \Ncrypthic\Daemon\Process\ProcessInterface $proc
      */
     public function addProcess(ProcessInterface $proc);
     /**
      * Remove a managed process
      * 
-     * @param \NcrypthicDaemon\Process\ProcessInterface $proc
+     * @param \Ncrypthic\Daemon\Process\ProcessInterface $proc
      */
     public function removeProcess(ProcessInterface $proc);
     /**

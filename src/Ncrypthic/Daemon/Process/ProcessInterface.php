@@ -19,7 +19,7 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace NcrypthicDaemon\Process;
+namespace Ncrypthic\Daemon\Process;
 
 /**
  * Process interface
@@ -29,7 +29,7 @@ namespace NcrypthicDaemon\Process;
 interface ProcessInterface
 {
     /**
-     * Process execution method
+     * Process main execution method
      */
     public function execute();
 }

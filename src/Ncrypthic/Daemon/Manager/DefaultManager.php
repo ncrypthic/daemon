@@ -19,10 +19,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace NcrypthicDaemon\Manager;
+namespace Ncrypthic\Daemon\Manager;
 
-use NcrypthicDaemon\Process\ProcessInterface;
-use NcrypthicDaemon\Exception as Exc;
+use Ncrypthic\Daemon\Process\ProcessInterface;
+use Ncrypthic\Daemon\Exception as Exc;
 
 /**
  * Default implementation of ManagerInterface
@@ -67,7 +67,7 @@ class DefaultManager implements ManagerInterface
     /**
      * Find id of a process 
      * 
-     * @param \NcrypthicDaemon\Process\ProcessInterface $proc
+     * @param \Ncrypthic\Daemon\Process\ProcessInterface $proc
      * @return \ProcessInterface
      * @throws Exc\ProcessNotFoundException
      */
@@ -96,8 +96,7 @@ class DefaultManager implements ManagerInterface
                 throw new Exc\ForkErrorException();
                 break;
             case 0:
-//                while(true)
-                    $proc->execute();
+                $proc->execute();
                 break;
             default:
                 $this->childs[$pid] = $proc;
@@ -133,7 +132,7 @@ class DefaultManager implements ManagerInterface
         $error = false;
         while(!$error)
         {
-            $pid = pcntl_wait($status, WNOHANG|WUNTRACED);
+            $pid = pcntl_waitpid( -1, $status, WNOHANG|WUNTRACED);
             switch($pid)
             {
                 case -1:

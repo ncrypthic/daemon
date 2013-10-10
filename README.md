@@ -26,12 +26,15 @@ git clone git@github.org:ncrypthic/daemon
 
 ## Running
 - Autoload the project
+
 ```
 <?php
 
 spl_autoload_register();
 ```
+
 - Create process(es) classes which implements **ProcessInterface** interface
+
 ```
 <?php
 use Ncrypthic\Daemon\Process\ProcessInterface;
@@ -56,7 +59,9 @@ class BobProcess implements ProcessInterface
     }    
 }
 ```
+
 - Create default manager instance and register the tasks
+
 ```
 <?php
 
@@ -66,7 +71,9 @@ $manager = new \Ncrypthic\Daemon\Manager\DefaultManager();
 $manager->addProcess(new AliceProcess());
 $manager->addProcess(new BobProcess());
 ```
+
 - Now daemonize the manager
+
 ```
 <?php
 
@@ -80,6 +87,7 @@ try {
 ## Output
 
 - Console output
+
 ```
 bash-4.2$ php <your_script>.php 
 Alice done
@@ -97,13 +105,16 @@ Bob done
         No child processes
 Alice done
 ```
+
 - Process manager output
+
 ```
 php
-    `+-php
-     +-php
+   `+-php
+    +-php
 ```
 
 #### Todo
+
 - Implements process events
 - Support composser and packagist

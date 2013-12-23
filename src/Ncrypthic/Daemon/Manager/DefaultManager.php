@@ -21,8 +21,8 @@
  */
 namespace Ncrypthic\Daemon\Manager;
 
-use Ncrypthic\Daemon\Process\ProcessInterface;
-use Ncrypthic\Daemon\Exception as Exc;
+use Psr\Log\LoggerInterface;
+use Ncrypthic\Daemon\Exception\NoChildProcessErrorException;
 
 /**
  * Default implementation of ManagerInterface
@@ -30,152 +30,36 @@ use Ncrypthic\Daemon\Exception as Exc;
  * created : Oct 8, 2013 4:43:06 PM
  * @author Lim Afriyadi <lim.afriyadi.id@gmail.com>
  */
-class DefaultManager implements ManagerInterface
+class DefaultManager extends AbstractProcessManager
 {
-    private $index     = 0;
-    private $childs    = array();
-    private $processes = array();
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addProcess( ProcessInterface $proc )
+    public function daemonize(LoggerInterface $logger)
     {
-        $this->processes[$this->index++] = $proc;
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function current()
-    {
-        return $this->processes[$this->index];
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function daemonize()
-    {
-        if($this->valid())
+        $done = false;
+        while(false == $done)
         {
-            foreach($this->processes as $process)
-            {
-                $this->fork($process);
-            }
-            $this->monitor();
-        }
-    }
-    /**
-     * Find id of a process 
-     * 
-     * @param \Ncrypthic\Daemon\Process\ProcessInterface $proc
-     * @return \ProcessInterface
-     * @throws Exc\ProcessNotFoundException
-     */
-    public function findProcess( ProcessInterface $proc )
-    {
-        $index = array_search($proc, $this->processes, true);
-        if(false === $index)
-            throw new Exc\ProcessNotFoundException();
-        return $index;
-    }
-    /**
-     * Fork process
-     * 
-     * @throws Exc\ExtensionNotInstalledException
-     * @throws Exc\ForkErrorException
-     */
-    public function fork(  ProcessInterface $proc)
-    {
-        if(!function_exists('pcntl_fork'))
-            throw new Exc\ExtensionNotInstalledException();
-
-        $pid = pcntl_fork();
-        switch($pid)
-        {
-            case -1:
-                throw new Exc\ForkErrorException();
-                break;
-            case 0:
-                $proc->execute();
-                break;
-            default:
-                $this->childs[$pid] = $proc;
-        }
-    }
-    /**
-     * Get a process by its id
-     * 
-     * @param int $index
-     * @return \ProcessInterface
-     * @throws Exc\ProcessNotFoundException
-     */
-    public function getProcess( $index )
-    {
-        if(isset($this->processes[$index])) 
-           return $this->processes[$index];
-        throw new Exc\ProcessNotFoundException();
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function key()
-    {
-        return $this->index;
-    }
-    /**
-     * Child process monitoring method
-     * 
-     * @throws Exc\ChildProcessException
-     */
-    public function monitor()
-    {
-        $error = false;
-        while(!$error)
-        {
-            $pid = pcntl_waitpid( -1, $status, WNOHANG|WUNTRACED);
-            switch($pid)
-            {
-                case -1:
-                    $error   = true;
-                    $message = pcntl_strerror(pcntl_get_last_error());
-                    throw new Exc\ChildProcessException($message);
-                case 0:
-                    break;
-                default:
-                    $process = $this->childs[$pid];
-                    unset($this->childs[$pid]);
-                    $this->fork($process);
+            try {
+                $this->run($logger);
+                $this->monitor($logger);
+            } catch (NoChildProcessErrorException $exc) {
+                $done = true;
+                $logger->info('No processes left to run exiting...');
             }
         }
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function next()
+
+    public function getName()
     {
-        return $this->getProcess($this->index++);
+        return 'process_manager';
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function removeProcess( ProcessInterface $proc )
+
+    public function onAfterFork( $isParent, LoggerInterface $logger )
     {
-        $index = $this->findProcess($proc);
-        unset($this->processes[$index]);
-        $this->processes = array_values($this->processes);
+        
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function rewind()
+
+    public function onBeforeFork( \Ncrypthic\Daemon\Interfaces\ProcessInterface $process, LoggerInterface $logger )
     {
-        $this->index = 0;
+        
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function valid()
-    {
-        return !empty($this->processes);
-    }    
+
 }

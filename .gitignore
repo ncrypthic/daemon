@@ -1,1 +1,5 @@
-nbprojects/*
+/old/
+/vendor/
+/UniversalClassLoader.php
+/composer.lock
+nbproject/

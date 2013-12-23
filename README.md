@@ -19,25 +19,21 @@ This library provides basic threaded process control to run our tasks but we wan
 
 ## Installing
 
-- Just clone the repository to your project
+- Via composer
+
 ```
-git clone git@github.org:ncrypthic/daemon
+requires: {
+    "ncrypthic/daemon": "dev-master"
+}
 ```
 
 ## Running
-- Autoload the project
-
-```
-<?php
-
-spl_autoload_register();
-```
 
 - Create process(es) classes which implements **ProcessInterface** interface
 
 ```
 <?php
-use Ncrypthic\Daemon\Process\ProcessInterface;
+use Ncrypthic\Daemon\Interfaces\ProcessInterface;
 
 class AliceProcess implements ProcessInterface
 {
@@ -114,7 +110,4 @@ php
     +-php
 ```
 
-#### Todo
-
-- Implements process events
-- Support composser and packagist
+-- see examples
